@@ -1,0 +1,154 @@
+---
+title: "Assignment 2"
+author: "Data Science for Biomedical Informatics (BMIN503/EPID600)"
+output: 
+  html_document:
+    theme: lumen 
+---
+    
+```{r set-options, echo = FALSE, cache = FALSE}
+options(width = 400)
+```    
+
+***
+
+### Instructions
+
+- Download the Rmd version of this file
+- Complete the questions below in RStudio using the Rmd file as a template 
+- Replace text in brackets with your answers, making sure you keep executable code in chunks along with its output to answer the questions. (There is no need to keep the brackets).
+- Save the Rmd document as Assignment2_*YOUR LAST NAME*.Rmd
+- Create an HTML version using knitr
+- Turn in completed Assignment2_*YOUR LAST NAME*.html file in Canvas under Assignments -> Assignment 2
+- Your assignment **must** be in html format or it will not be graded
+- Grades will be assigned according to point scheme below and computed as a percentage of total possible points
+- Lateness policy: If an urgent and unforeseen circumstance comes up and you need an extension to turn in an assignment, please contact Blanca, Kuldeep or Ludwig as soon as possible. Unless there is an arrangement in place, late assignments will be scored as follows: 
+    - 25% of total score if 1 day late
+    - 50% of total score if 2 days late
+    - 75%  of total score if 3 days late
+    - Assignment will not be graded if 4 or more days late
+- DUE DATE: 9/23/21 11:59pm
+
+### R Basics
+
+1. Create a matrix `my.matrix` containing the following columns (in this order): *(2 points)* 
+    + Column 1: Numbers 1 to 40
+    + Column 2: Even numbers 1 to 80
+    + Column 3: All Zeros
+    + Column 4: Entries of column 1 times those of column 2
+
+```{r}
+my.matrix <- matrix(nrow = 40, ncol = 4)
+x <- c(1:40)
+y <- c(seq(2,80,2))
+z <- rep(0, 40)
+a <- c(x*y)
+
+my.matrix <- cbind(x,y,z,a)
+```
+
+Show the header of `my.matrix`. Add a 5th column containing repeated instances of the letters `a` and `b` (i.e., `a`, `b`, `a`, `b`,...). Show the header of `my.matrix` again. What changed in columns 1-4? *(2 points)*
+    
+```{r}
+head(my.matrix)
+```
+
+x  y z  a
+[1,] 1  2 0  2
+[2,] 2  4 0  8
+[3,] 3  6 0 18
+[4,] 4  8 0 32
+[5,] 5 10 0 50
+[6,] 6 12 0 72
+
+```{r}
+c<-c("a","b")
+b <- rep(c, 20)
+
+my.matrix <- cbind(my.matrix,c)
+```
+
+```{r}
+head(my.matrix)
+```
+Now all of the values are in quotations because we have forced them to become characters instead of numeric.
+
+2. Create a data frame called `my.data.frame` based on the matrix `my.matrix` (i.e., convert `my.matrix` to a data frame, rather than define `my.data.frame` from scratch using the individual columns). Give the columns names "Index", "EvenNums", "Zeroes", "V4", and "AB" in that order. Report the class of each column. Convert columns 1-4 to class numeric. Show the class of each column again. *(2 points)*
+
+```{r}
+my.data.frame <- as.data.frame(my.matrix)
+colnames(my.data.frame) <- c("Index","EvenNums","Zeroes","V4","AB")
+summary(my.data.frame)
+```
+Index             EvenNums            Zeroes               V4                 AB           
+ Length:40          Length:40          Length:40          Length:40          Length:40         
+ Class :character   Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character 
+ 
+```{r}
+my.data.frame$Index <- as.numeric(my.data.frame$Index)
+my.data.frame$EvenNums <- as.numeric(my.data.frame$EvenNums)
+my.data.frame$Zeroes <- as.numeric(my.data.frame$Zeroes)
+my.data.frame$V4 <- as.numeric(my.data.frame$V4)
+summary(my.data.frame)
+```
+ 
+3. Write a _for loop_ to create a list `L` where each entry `i` is a list of the "EvenNums" and "AB" corresponding to my.data.frame[i, ]. Show the contents of the 35th element of `L`. Show two ways in which you can retrieve the contents of the 2nd element of the 35th element of `L`. Hint: make sure the list entries have names so you can use double brackets and $. *(2 points)*
+
+```{r}
+head(my.data.frame)
+
+L <- list(length = 40)
+
+for (i in 1:nrow(my.data.frame)) {
+L[[i]]<- c(my.data.frame$EvenNums[i], my.data.frame$AB[i])
+}
+
+L[[35]]
+
+L[[35]][2]
+
+names<-c(1:40)
+print(names)
+names(L)<- names
+names(L)
+L$"35"[2]
+```
+
+4. Write a function called `my.f` that returns x if x is even, or 2 times x if x is odd. Account for the fact that a user may not provide an integer by having a condition that displays a text message with a warning when x is not an integer. *(2 points)*
+
+> Replace this text with a chunk of R code to answer the question. Use the outline of the function below to answer.
+  my.f <- function (x) {
+            [your code here]
+  }
+  
+> Show output of the following commands:
+
+> my.f(3)
+
+> my.f(3L)
+ 
+> my.f(6L)
+
+> my.f("two")
+
+
+
+### R Data Manipulation
+
+5. There is a CSV file containing a subset of the 2007-2008 NHANES data [here](https://raw.githubusercontent.com/HimesGroup/BMIN503/master/DataFiles/NHANES_2007to2008.csv) with a corresponding [data dictionary](https://github.com/HimesGroup/BMIN503/blob/master/DataFiles/NHANES_2007to2008_DataDictionary.md). Read in the *raw* data file. *(2 points)*
+
+> Replace this text with a chunk of R code that loads the dataset
+  
+Answer the following questions by inserting code below each bullet to provide the answer directly. *(10 points)*
+
+* How many subjects are in the dataset and what data type is in each column?
+
+* How many missing values are there for each variable?
+
+* How many male and female subjects are there?
+
+* Where do subjects most often go to for healthcare?
+
+* How many children are part of the study (with child defined as age less than 18 years)?
+
